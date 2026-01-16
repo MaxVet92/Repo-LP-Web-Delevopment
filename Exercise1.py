@@ -1,6 +1,6 @@
 
-### Inquire name, height and weight of the user
-def get_info():
+# Inquire name, height and weight of the user
+def get_info() -> tuple[str, float, float]:
     """
     Let the user input values for their name, weight and height.
      
@@ -12,29 +12,31 @@ def get_info():
     float: weight
     float: height
     """
-    ## enter name
+    # enter name
     while True:
-        name = input("Enter your name:")
+        name = input("Enter your name: ")
         if name != "" and name.isalpha():
             break
         print("Input not valid. Please try again")
 
-    ## enter weight
+    # enter weight
     while True:
         try:
-            weight = float(input("Hello, " + name + ". Please enter your weight in Kg"))
+            weight = float(input(f"Hello, {name}. Please enter your weight in Kg "))
             if weight <= 0:
                 print("Your weigt must be greater than 0")
+                continue
+            elif weight <= 20:
+                print("Your weigt input must be realistic. Please enter again")
                 continue
             break
         except ValueError:
             print("Please type a valid number")
         
-
-    ## enter height
+    # enter height
     while True:
         try:
-            height = float(input("Great, now please enter your height in cm")) / 100
+            height = float(input("Great, now please enter your height in cm ")) / 100
             if height <= 0:
                 print("Invalid height. Please try again.")
                 continue
@@ -45,8 +47,8 @@ def get_info():
     return name, weight, height
 
 
-### calculate the BMI
-def BMI(weight, height):
+# calculate the BMI
+def BMI(weight: float, height: float) -> tuple[float, float]:
     """Calculate the Body-Mass-Index (BMI).
      
     Parameters:
@@ -58,13 +60,13 @@ def BMI(weight, height):
     """
     return weight / height**2
 
-### Variable definitions
+# Variable definitions
 name, weight, height = get_info()
 
-BMI = round(BMI(weight, height), 2)
+bmi: float = round(BMI(weight, height), 2)
 
-### Calculate BMI category
-def BMI_cat(BMI):
+# Calculate BMI category
+def get_bmi_category(BMI: float) -> float:
     
     if BMI < 18.5:
         Category = "Underweight"
@@ -79,7 +81,7 @@ def BMI_cat(BMI):
         Category = "Obese"
     return Category
 
-Category = BMI_cat(BMI)
+category: str = get_bmi_category(bmi)
 
-### Closing message
-print(name + ", your BMI is: " + str(BMI) + ". Your weight category therefore is: " + Category)
+# Closing message
+print(f"{name}, your BMI is: {bmi}. Your weight category therefore is: {category}.")
