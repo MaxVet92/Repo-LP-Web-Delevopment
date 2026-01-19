@@ -1,4 +1,4 @@
-
+# Let user input the amount of money to be changed
 def amount():
     amount = int(input("How much money would you like to convert? "))
     while True:
@@ -8,6 +8,7 @@ def amount():
         break
     return amount
 
+# Let user decide whether or not they want to see supported currencies
 def supported_currencies():
     view_currencies = input("Would you like to view supported currencies? Type 'Y' or 'N'. ")
     currencies = ("EUR", "USD", "RUB")
@@ -21,7 +22,8 @@ def supported_currencies():
             print("Invalid input. Please try again")
     return
 
-def Currency_Source():
+# Let user choose the source currency
+def currency_source():
     while True:
         source_choice = input("Choose source currency. ")
         if source_choice in ("EUR", "USD", "RUB"):
@@ -29,7 +31,8 @@ def Currency_Source():
         print("Invalid choice. Please select 'EUR', 'USD' or 'RUB'")
     return source_choice
 
-def Currency_Target(source_choice):
+# Let user choose the target currency
+def currency_target(source_choice):
     while True:
         target_choice = input("Choose target currency. ")
         if target_choice in ("EUR", "USD", "RUB") and target_choice != source_choice:
@@ -37,12 +40,7 @@ def Currency_Target(source_choice):
         print("Invalid choice. Please select 'EUR', 'USD' or 'RUB' and a differnt currency than the source.")
     return target_choice
 
-### Currency
-amount = int(amount())
-supported_currencies()
-source = Currency_Source()
-target = Currency_Target(source)
-
+# Define the default exchange rates
 def exchange_rate(source, target):
         rates = {
         ("USD", "EUR"): 0.85,
@@ -54,9 +52,7 @@ def exchange_rate(source, target):
     }
         return rates
 
-rates = exchange_rate(source, target)
-current_rate = rates[(source, target)]
-
+# Ask the user whether they want to change the current exchange rate from the selected source to target
 def change_exchange_rate(rates, source, target):
     current_rate = rates[(source, target)]
     while True:
@@ -75,5 +71,13 @@ def change_exchange_rate(rates, source, target):
         else:
             print("Invalid input. Try again")
 
-exchangeRate = change_exchange_rate(rates, source, target)
-print(f"Your exchanged amount is {exchangeRate * amount} {target}")
+# function calls
+if __name__ == "__main__":
+    amount = int(amount())
+    supported_currencies()
+    source = currency_source()
+    target = currency_target(source)
+    rates = exchange_rate(source, target)
+    current_rate = rates[(source, target)]
+    exchangeRate = change_exchange_rate(rates, source, target)
+    print(f"Your exchanged amount is {exchangeRate * amount} {target}")
