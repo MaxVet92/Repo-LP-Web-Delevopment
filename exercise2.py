@@ -1,60 +1,81 @@
-# Let user input the amount of money to be changed
+
 def get_amount():
-    amount = int(input("How much money would you like to convert? "))
+    # Let user input the amount of money to be changed
     while True:
+        try:
+            amount = int(input("How much money would you like to convert? "))
+        except ValueError:
+            print("This is not a valid amount. Please try again")
         if amount < 0:
             print("This is not a valid amount. Please try again")
-            continue
-        break
-    return amount
+        else:
+            return amount
 
-# Let user decide whether or not they want to see supported currencies
-def supported_currencies():
-    view_currencies = input("Would you like to view supported currencies? Type 'Y' or 'N'. ")
+
+def print_supported_currencies():
+    # Let user decide whether or not they want to see supported currencies
     currencies = ("EUR", "USD", "RUB")
     while True:
-        if view_currencies == "Y":
+        is_view_currencies = input("Would you like to view supported currencies? Type 'Y' or 'N'. ")
+        if is_view_currencies == "Y":
             print(currencies)  
-            break
-        elif view_currencies == "N":
-            break 
+            return
+        elif is_view_currencies == "N":
+            return 
         else:
             print("Invalid input. Please try again")
-    return
 
-# Let the user have the option to add currencies and thus add exchange rates
-def add_currencies(rates):
+
+def ask_add_currency() -> bool:
+    # Check whether new currencies should be added
+    return input("Would you like to add a currency? Type 'Y' or 'N'. ").upper() == "Y"
+
+
+def get_new_currency(existing_currencies: set) -> str:
     while True:
-    # User wants to add a new currency? Yes or No
-        add_YorN = input("Would you like to add a currency? Type 'Y' or 'N'. ").upper()
-        if add_YorN == "Y":
-            existing_currencies = set()
-            for pair in rates:
-                existing_currencies.update(pair)
-            while True:
-                    new_currency = input("Which currency would you like to add? The input must be a capitalized three letter abreviation. ")
-                    if len(new_currency) == 3 and new_currency.isalpha() and new_currency not in existing_currencies:
-                        break
-                    print("Invalid format or currency already exists. Please try again.")
-           
+        new_currency = input("Which currency would you like to add? The input must be a capitalized three letter abreviation. ")
+        if len(new_currency) == 3 and new_currency.isalpha() and new_currency not in existing_currencies:
+            return new_currency
+        print("Invalid format or currency already exists. Please try again.")
+
+
+def get_existing_currencies(rates: dict[tuple, float]) -> set:
+    # get set of existing currencies from rates dictionary
+    existing_currencies = set()
+    for pair in rates:
+        existing_currencies.update(pair)
+    return existing_currencies
+
+
+def get_exchange_rate(new_currency: str, existing_currency: str) -> float:
+    while True:
+        try:
+            rate = float(input(f"What is the exchange rate from {new_currency} to {existing_currency}? "))
+            if rate <= 0:
+                raise ValueError
+            return rate
+        except ValueError:
+            print("Invalid input. Enter a positive number")
+
+
+def add_currencies(rates: dict[tuple, float]) -> dict[tuple, float]:
+    new_rates = rates.copy()
+    # Let the user have the option to add currencies and thus add exchange rates
+    # Feedback: with set and following for cycle ist geile Lösung
+    existing_currencies = get_existing_currencies(new_rates)
+    new_currency = get_new_currency(existing_currencies)
+
     # Define new exchange rates
-            for currency in existing_currencies:
-                while True:
-                    try:
-                        rate = float(input(f"What is the exchange rate from {currency} to {new_currency}? "))
-                        if rate <= 0:
-                            raise ValueError
-                        rates[new_currency, currency] = rate
-                        rates[currency, new_currency] = 1 / rate
-                        break
-                    except ValueError:
-                        print("Invalid input. Enter a positive number")
-        elif add_YorN == "N":
-            break
-        else:
-            print("Invalid input. Try again.")
-# Let user choose the source currency
+    for currency in existing_currencies:
+        rate = get_exchange_rate(new_currency, currency)
+        new_rates[new_currency, currency] = rate
+        new_rates[currency, new_currency] = 1 / rate
+
+    return new_rates
+
+
 def currency_source(rates) -> str:
+    # Let user choose the source currency
     supported = sorted({c for pair in rates for c in pair})
     while True:
         source_choice = input("Choose source currency. ").upper()
@@ -63,8 +84,9 @@ def currency_source(rates) -> str:
         print(f"Invalid choice. Please select in  {', '.join(supported)}: ")
     return source_choice
 
-# Let user choose the target currency
+
 def currency_target(source_choice, rates) -> str:
+    # Let user choose the target currency
     supported = sorted({c for pair in rates for c in pair})
     while True:
         target_choice = input("Choose target currency. ").upper()
@@ -73,8 +95,9 @@ def currency_target(source_choice, rates) -> str:
         print(f"Invalid choice. Please select in {', '.join(supported)}. The target currency has to be different than the source currency.")
     return target_choice
 
-# Ask the user whether they want to change the current exchange rate from the selected source to target
+
 def change_exchange_rate(rates, source, target):
+    # Ask the user whether they want to change the current exchange rate from the selected source to target
     current_rate = rates[(source, target)]
     while True:
         change_Y_or_N = input(f"This is the current exchange rates: {current_rate}. Would you like to change it? Answer Y or N. ")
@@ -92,21 +115,31 @@ def change_exchange_rate(rates, source, target):
         else:
             print("Invalid input. Try again")
 
-# function calls
-if __name__ == "__main__":
+
+def main():
     rates: dict = {
-    ("USD", "EUR"): 0.85,
-    ("EUR", "USD"): 1.1765,
-    ("USD", "RUB"): 76,
-    ("RUB", "USD"): 0.01316,
-    ("EUR", "RUB"): 89.41,
-    ("RUB", "EUR"): 0.01118
-}
+        ("USD", "EUR"): 0.85,
+        ("EUR", "USD"): 1.1765,
+        ("USD", "RUB"): 76,
+        ("RUB", "USD"): 0.01316,
+        ("EUR", "RUB"): 89.41,
+        ("RUB", "EUR"): 0.01118
+    }
+
     amount: int = get_amount()
-    supported_currencies()
-    add_currencies(rates)
+
+    print_supported_currencies()
+
+    if ask_add_currency():
+        add_currencies(rates)
+
     source: str = currency_source(rates)
     target: str = currency_target(source, rates)
     current_rate: float = rates[(source, target)]
     exchangeRate: float = change_exchange_rate(rates, source, target)
     print(f"Your exchanged amount is {round(exchangeRate * amount,1)} {target}")
+
+
+# function calls
+if __name__ == "__main__":
+    main()
