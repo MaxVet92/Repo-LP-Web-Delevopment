@@ -1,102 +1,82 @@
 
-# Inquire name, height and weight of the user
-def get_info() -> tuple[str, float, float]:
-    """
-    Let the user input values for their name, weight and height.
-     
-    Parameters:
-    None
-    
-    Return:
-    string: name
-    float: weight
-    float: height
-    """
-    # enter name
+def get_name() -> str:
+    # Get the user's name
     while True:
         name = input("Enter your name: ")
         if name != "" and name.isalpha():
-            break
+            return name
         print("Input not valid. Please try again")
 
-    # Choose weight unit
-    def weight_unit() -> str:
-        while True:
-            weight_unit: str = input("Choose between pounds and kg as your weight input unit ")
-            if weight_unit in ("pounds", "kg"):
-                break
-            print("Wrong input. Please try again")
-        return weight_unit
-    
-    weight_unit: str = weight_unit()
+def get_weight_unit() -> str:
+# Ask the user which weight unit they want
+    while True:
+        unit = input("Choose between pounds and kg as your weight input unit: ")
+        if unit in ("pounds", "kg"):
+            return unit
+        print("Wrong input. Please try again")
 
-    # enter weight
+def get_weight(name: str, weight_unit: str) -> float:
+    # Ask the user for weight and convert to kg if needed
     while True:
         try:
-            if weight_unit == "kg":
-                weight = float(input(f"Hello, {name}. Please enter your weight in {weight_unit} "))
-            else:
-                weight = float(input(f"Hello, {name}. Please enter your weight in {weight_unit} ")) * 0.453592
+            weight_input = float(input(f"Hello, {name}. Please enter your weight in {weight_unit}: "))
+            weight = weight_input if weight_unit == "kg" else weight_input * 0.453592
+
             if weight <= 0:
-                print("Your weigt must be greater than 0")
-                continue
+                print("Your weight must be greater than 0")
             elif weight <= 20:
-                print("Your weigt input must be realistic. Please enter again")
-                continue
-            break
+                print("Your weight input must be realistic. Please enter again")
+            else:
+                return weight
         except ValueError:
             print("Please type a valid number")
-        
-# Choose height unit
-    def height_unit() -> str:
-        while True:
-            height_unit: str = input("Choose between inches and cm as your height input unit ")
-            if height_unit in ("inches", "cm"):
-                break
-            print("Wrong input. Please try again")
-        return height_unit
-    
-    height_unit: str = height_unit()
 
-    # enter height
+def get_height_unit() -> str:
+    # Ask the user which height unit they want
+    while True:
+        unit = input("Choose between inches and cm as your height input unit: ")
+        if unit in ("inches", "cm"):
+            return unit
+        print("Wrong input. Please try again")
+
+def get_height(height_unit: str) -> float:
+    # Ask the user for height and convert to meters
     while True:
         try:
-            if height_unit == "cm":
-                height = float(input(f"Great, now please enter your height in {height_unit} ")) * 0.01
+            height_input = float(input(f"Great, now please enter your height in {height_unit}: "))
+            height = height_input * 0.01 if height_unit == "cm" else height_input * 0.0254
+
+            if height <= 0:
+                print("Invalid height. Please try again.")
             else:
-                height = float(input(f"Great, now please enter your height in {height_unit} ")) * 0.0254
-                if height <= 0:
-                    print("Invalid height. Please try again.")
-                    continue
-            break
+                return height
         except ValueError:
-            print("You didn't type in a number please try again")
-        print(height)
+            print("You didn't type in a number. Please try again.")
+
+def get_info() -> tuple[str, float, float]:
+    # Main function to get all info
+    name = get_name()
+    weight_unit = get_weight_unit()
+    weight = get_weight(name, weight_unit)
+    height_unit = get_height_unit()
+    height = get_height(height_unit)
     return name, weight, height
     
-# calculate the BMI
-def BMI(weight: float, height: float) -> tuple[float, float]:
+def BMI(weight: float, height: float) -> float:    
+    # calculate the BMI
     """Calculate the Body-Mass-Index (BMI).
      
     Parameters:
     weight (float): weight in kilogram (kg)
-    height (float): height in centimeters (cm) 
+    height (float): height in centimeters (m) 
     
     Return:
     float: BMI vlaue
     """
     return weight / height ** 2
 
-
-# Variable definitions
-name, weight, height = get_info()
-
-bmi: float = BMI(weight, height)
-
-
-# Calculate BMI category
 def get_bmi_category(bmi: float) -> str:
-    
+    # Calculate BMI category
     if bmi < 18.5:
         Category = "Underweight"
 
@@ -110,19 +90,23 @@ def get_bmi_category(bmi: float) -> str:
         Category = "Obese"
     return Category
 
-category: str = get_bmi_category(bmi)
+# Main, function calling
+if __name__ == "__main__":
+    name, weight, height = get_info()
+    bmi: float = BMI(weight, height)
+    category: str = get_bmi_category(bmi)
 
-# Closing message
-if name in ("Ksenia","ksenia", "Tim","tim", "Mo","mo"):
-    print(f"Your BMI is {bmi}, but you´re fat anyways, says Ksenia")
+    # Closing message
+    if name in ("Ksenia","ksenia", "Tim","tim", "Mo","mo"):
+        print(f"Your BMI is {bmi}, but you´re fat anyways, says Ksenia")
 
-else:
-    print(f"{name}, your BMI is: {bmi}. Your weight category therefore is: {category}.")
-    if category == "Underweight":
-        print("you are too weak. Eat more!")
-    elif category == "Normal weight":
-        print("You are great. Continue like that")
-    elif category == "overweight":
-        print("You are too fat, do more sports and eat less!")
     else:
-        print("You are way too fat. You need to change your life drastically")
+        print(f"{name}, your BMI is: {bmi}. Your weight category therefore is: {category}.")
+        if category == "Underweight":
+            print("you are too weak. Eat more!")
+        elif category == "Normal weight":
+            print("You are great. Continue like that")
+        elif category == "Overweight":
+            print("You are too fat, do more sports and eat less!")
+        else:
+            print("You are way too big. You need to change your lifestyle")
