@@ -1,4 +1,12 @@
 
+# generally I am quite happy with the exercise, but:
+# avoid global if possible, as it makes code less modular, harder to test and read
+# hence: -> add contracts variable to all functions that need it, and pass it as an argument;
+# Delete/search/edit actions are capital letters and spaces sensitive, please adjust
+# names of the functions do not have verbs in them, which makes it harder to understand what they do; rename functions so that they are actionable
+# importing libraries should be at the top of the file, not in the middle of the code; move all imports to top
+# improve your type-hinting to be more specific (same comment as in exercise 2)
+
 def save_file_to_json(contacts: dict):
     # save back to json file
     with open("contacts.json", "w", encoding = "utf-8") as file:

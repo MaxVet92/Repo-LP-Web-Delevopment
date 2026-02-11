@@ -3,6 +3,8 @@ def get_name() -> str:
     # Get the user's name
     while True:
         name = input("Enter your name: ")
+        # feedback 20260211: name.isalpha rejects valid names such as Anna-Maria; 
+        # suggest different error handling here
         if name != "" and name.isalpha():
             return name
         print("Input not valid. Please try again")
@@ -62,6 +64,8 @@ def get_info() -> tuple[str, float, float]:
     height = get_height(height_unit)
     return name, weight, height
     
+# feedback 20260211: as mentioned before, only snake-case actionable functions name
+# calculate_bmi instead of BMI
 def BMI(weight: float, height: float) -> float:    
     # calculate the BMI
     """Calculate the Body-Mass-Index (BMI).
@@ -75,6 +79,7 @@ def BMI(weight: float, height: float) -> float:
     """
     return weight / height ** 2
 
+# feedback 20260211: category instead of Category, capital C suggests a class, but this is just a variable
 def get_bmi_category(bmi: float) -> str:
     # Calculate BMI category
     if bmi < 18.5:
