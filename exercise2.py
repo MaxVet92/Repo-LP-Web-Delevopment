@@ -1,4 +1,6 @@
 
+# feedback 20260211 important! this function is not working correctly, please fix
+# bug trace: if you imput invalid number into get amount now, the program crashes
 def get_amount():
     # Let user input the amount of money to be changed
     while True:
@@ -12,6 +14,8 @@ def get_amount():
             return amount
 
 
+# feedback 20260211: you are printing out fixed list, and that list can become outdated if user adds new currency; suggest to print out the supported currencies from the rates dictionary instead
+# please think on how to derive supported currencies dynamically and adjust
 def print_supported_currencies():
     # Let user decide whether or not they want to see supported currencies
     currencies = ("EUR", "USD", "RUB")
@@ -25,6 +29,10 @@ def print_supported_currencies():
         else:
             print("Invalid input. Please try again")
 
+
+# feedback 20260211: your type-hinting is too unspecific; if we already use type-hinting, we should be specific; 
+# for example, dict[tuple, float] specify further that the tuple is of type tuple[str, str], so dict[tuple[str, str], float]
+# do same with set type hinting also
 def get_existing_currencies(rates: dict[tuple, float]) -> set:
     # get set of existing currencies from rates dictionary
     existing_currencies = set()
@@ -32,12 +40,15 @@ def get_existing_currencies(rates: dict[tuple, float]) -> set:
         existing_currencies.update(pair)
     return existing_currencies
 
+# feedback 20260211: currently you are always asking "which currency >...>."
+# rather ask whether one wants to add currency at all, as you did in the functions above 
 def get_new_currency(existing_currencies: set) -> str:
     while True:
         new_currency = input("Which currency would you like to add? The input must be a capitalized three letter abreviation. ").upper()
         if len(new_currency) == 3 and new_currency.isalpha() and new_currency not in existing_currencies:
             return new_currency
         print("Invalid format or currency already exists. Please try again.")
+
 
 def get_exchange_rate(new_currency: str, existing_currency: str) -> float:
     while True:
@@ -85,6 +96,9 @@ def currency_target(source_choice, rates) -> str:
     return target_choice
 
 
+# this function is now full; it does update source to target, but not target to source;
+# adjust so that the program works for both source to target and target to source
+# to this function add error handing for float conversion (will crash now with invalid input from the user)
 def change_exchange_rate(rates, source, target):
     # Ask the user whether they want to change the current exchange rate from the selected source to target
     current_rate = rates[(source, target)]
@@ -120,6 +134,7 @@ def main():
     source: str = currency_source(rates)
     target: str = currency_target(source, rates)
     current_rate: float = rates[(source, target)]
+    #wrong variable name should be exchange_rate
     exchangeRate: float = change_exchange_rate(rates, source, target)
     print(f"Your exchanged amount is {round(exchangeRate * amount,1)} {target}")
 
