@@ -1,9 +1,12 @@
 
 def get_name() -> str:
     # Get the user's name
+    # Accept capital letters, small letters, accents, hyphens, aposthophes
+    pattern = re.compile(r"^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '\-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$")
+
     while True:
         name = input("Enter your name: ")
-        if name != "" and name.isalpha():
+        if pattern.fullmatch(name):
             return name
         print("Input not valid. Please try again")
 
@@ -62,7 +65,7 @@ def get_info() -> tuple[str, float, float]:
     height = get_height(height_unit)
     return name, weight, height
     
-def BMI(weight: float, height: float) -> float:    
+def get_bmi(weight: float, height: float) -> float:    
     # calculate the BMI
     """Calculate the Body-Mass-Index (BMI).
      
@@ -78,22 +81,23 @@ def BMI(weight: float, height: float) -> float:
 def get_bmi_category(bmi: float) -> str:
     # Calculate BMI category
     if bmi < 18.5:
-        Category = "Underweight"
+        category = "Underweight"
 
     elif bmi <= 24.9:
-        Category = "Normal weight"
+        category = "Normal weight"
 
     elif bmi <= 29.9:
-        Category = "Overweight"
+        category = "Overweight"
 
     else:
-        Category = "Obese"
-    return Category
+        category = "Obese"
+    return category
 
 # Main, function calling
 if __name__ == "__main__":
+    import re
     name, weight, height = get_info()
-    bmi: float = BMI(weight, height)
+    bmi: float = get_bmi(weight, height)
     category: str = get_bmi_category(bmi)
 
     # Closing message

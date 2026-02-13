@@ -1,10 +1,14 @@
 
-def save_file_to_json(contacts: dict):
+# import libraries
+import json
+import csv
+
+def save_file_to_json(contacts: dict[str, list[dict[str, str]]]):
     # save back to json file
     with open("contacts.json", "w", encoding = "utf-8") as file:
         json.dump(contacts, file, indent = 2, ensure_ascii=False)
 
-def menu_choice() -> int:
+def see_menu_choice() -> int:
     # This is the main menu
     # Ask the user what they would like to do next 
     # Save the response in the variable user_choice
@@ -19,7 +23,7 @@ def menu_choice() -> int:
     user_choice = int(input("Which action would you like to do? Select (1/2/3/4/5/6/7): "))
     return user_choice
 
-def second_level_menu(user_choice: int):
+def open_second_level_menu(user_choice: int):
     # This is the menu in the second level, once the user selected an option
     print("\n=== Contact Notebook Menu ===")
     if user_choice == 1:
@@ -34,11 +38,11 @@ def second_level_menu(user_choice: int):
         print("1. Edit contact")
     print("2. Go back to menu")
 
-def view_contactlist(contacts: dict, main_choice: int):
+def view_contactlist(contacts: dict[str, list[dict[str, str]]], main_choice: int):
     # let user view their contacts
     while True:
         try:
-            second_level_menu(main_choice)
+            open_second_level_menu(main_choice)
             user_choice = int(input("Which action would you like to do? Select (1/2): "))
             if user_choice == 1:
                 sorted_contacts = sorted(contacts["people"], key=lambda x: x["last_name"])
@@ -49,7 +53,7 @@ def view_contactlist(contacts: dict, main_choice: int):
             print(user_choice)
             print("Invalid input. Try again.")
 
-def contact_details_of_person_to_add() -> dict:
+def view_contact_details_of_person_to_add() -> dict[str, str]:
     person = {
                 "first_name": input("Type the first name: "),
                 "last_name" :input("Type the last name: "),
@@ -57,14 +61,14 @@ def contact_details_of_person_to_add() -> dict:
                 }
     return person
  
-def add_contact_to_notebook(contacts: dict, main_choice: int):
+def add_contact_to_notebook(contacts: dict[str, list[dict[str, str]]], main_choice: int):
     # Let the user add a contact to their notebook
     while True:
         try:
-            second_level_menu(main_choice)
+            open_second_level_menu(main_choice)
             user_choice = int(input("Which action would you like to do? Select (1/2): "))
             if user_choice == 1:
-                person = contact_details_of_person_to_add()
+                person = view_contact_details_of_person_to_add()
                 contacts["people"].append(person)
                 save_file_to_json(contacts)
                 print(f"You added {person["first_name"]} {person["last_name"]} to your notebook")
@@ -75,18 +79,18 @@ def add_contact_to_notebook(contacts: dict, main_choice: int):
         except ValueError:
             print("Invalid input. Try again")
 
-def remove_specific_contact(contacts: dict, main_choice: int):
+def remove_specific_contact(contacts: dict[str, list[dict[str, str]]], main_choice: int):
     # Let the user delete a contact
     while True:
         try:
-            second_level_menu(main_choice)
+            open_second_level_menu(main_choice)
             user_choice = int(input("Which action would you like to do? Select (1/2): "))
             if user_choice == 1:
                     first_name_delete = input(f"What is the first name of the person you wish to remove?")
                     last_name_delete = input(f"What is the last name of the person you wish to remove?")
                     delete_index = None
                     for index, person in enumerate(contacts["people"]):
-                        if person["first_name"] == first_name_delete and person["last_name"] == last_name_delete:
+                        if person["first_name"].strip().lower() == first_name_delete.strip().lower() and person["last_name"].strip().lower() == last_name_delete.strip().lower():
                             delete_index = index
                             contacts["people"].pop(delete_index)
                             print(f"You deleted {first_name_delete} {last_name_delete} from your notebook")
@@ -98,18 +102,18 @@ def remove_specific_contact(contacts: dict, main_choice: int):
         except ValueError:        
             print("Invalid input. Try again")
 
-def search_specific_contact(contacts: dict, main_choice: int):
+def search_specific_contact(contacts: dict[str, list[dict[str, str]]], main_choice: int):
     # Let the user search for contacts
     while True:
         try:
-            second_level_menu(main_choice)
+            open_second_level_menu(main_choice)
             user_choice =  int(input("Which action would you like to do? Select (1/2): "))
             if user_choice == 1:
                 first_name_search = input(f"What is the first name of the person you wish to search?")
                 last_name_search = input(f"What is the last name of the person you wish to search?")
                 search_index = None
                 for index, person in enumerate(contacts["people"]):
-                    if person["first_name"] == first_name_search and person["last_name"] == last_name_search:
+                    if person["first_name"].strip().lower() == first_name_search.strip().lower() and person["last_name"].strip().lower() == last_name_search.strip().lower():
                         search_index = index
                         print(json.dumps(contacts["people"][search_index], indent=2, ensure_ascii=False))
                     continue
@@ -120,7 +124,7 @@ def search_specific_contact(contacts: dict, main_choice: int):
         except ValueError:
             print("Invalid input. Try again")
 
-def apply_edit(person: dict, action: int):
+def apply_edit(person: dict[str, list[dict[str, str]]], action: int):
     # Overwrite the contactlist based on user input for editting
     if action == 1:
         person["first_name"] = input("Type in the new first name: ").strip()
@@ -131,7 +135,7 @@ def apply_edit(person: dict, action: int):
     else:
         print("Invalid input. Try again")
 
-def edit_menu():
+def open_edit_menu():
     # functions regardimng contact editting
     print("1. first_name")
     print("2. last_name")
@@ -140,14 +144,14 @@ def edit_menu():
 def find_contact(contacts, first_name: str, last_name: str):
     # Find contact for editting
     for person in contacts["people"]:
-        if person["first_name"] == first_name and person["last_name"] == last_name:
+        if person["first_name"].strip().lower() == first_name.strip().lower() and person["last_name"].strip().lower() == last_name.strip().lower():
             return person
     return None
 
-def edit_contact_fields(person: dict):
+def edit_contact_fields(person: dict[str, list[dict[str, str]]]):
     # Helper: edit multiple fields of a single contact
     while True:
-        edit_menu()
+        open_edit_menu()
         try:
             action = int(input("What would you like to edit? (1/2/3): "))
             if 1 <= action <= 3:
@@ -162,11 +166,11 @@ def edit_contact_fields(person: dict):
         except ValueError:
             print("Invalid input. Try again")
 
-def edit_specific_contact(contacts: dict, main_choice: int):
+def edit_specific_contact(contacts: dict[str, list[dict[str, str]]], main_choice: int):
     # Main function to edit contacts
     while True:
         # Show the second-level menu based on the main choice (Edit contact)
-        second_level_menu(main_choice)
+        open_second_level_menu(main_choice)
         try:
             user_choice = int(input("Which action would you like to do? Select (1/2): "))
             if user_choice == 1:
@@ -190,7 +194,7 @@ def edit_specific_contact(contacts: dict, main_choice: int):
         except ValueError:
             print("Invalid input. Please try again")
 
-def export_contactlist_to_csv(contacts: dict):
+def export_contactlist_to_csv(contacts: dict[str, list[dict[str, str]]]):
 # This lets user export the contact list to a csv
 # Load your contacts
     csv_file = "contacts.csv"
@@ -205,13 +209,14 @@ def export_contactlist_to_csv(contacts: dict):
 
     print(f"Contacts exported successfully to {csv_file}")
 
-def user_menu():
+
+def see_user_menu(contacts: dict[str, list[dict[str, str]]]):
     # This is the main user guiding menu
     # Depending on the user choice, a different function gets invoked
     while True:
         try:
             # Invoking menu_choice function to acquire user_choice for menu option
-            user_choice = menu_choice()
+            user_choice = see_menu_choice()
             # Guiding the user to the next menu based on their decision
             if user_choice == 1:
                 view_contactlist(contacts, user_choice)
@@ -233,12 +238,8 @@ def user_menu():
             print("Invalid input. Please try again")
 
 if __name__ == "__main__":
-    # import libraries
-    import json
-    import csv
-
     with open("contacts.json", "r") as file:
     # open contacts json file
         contacts = json.load(file)
 
-    user_menu()
+    see_user_menu(contacts)
