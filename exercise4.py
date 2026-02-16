@@ -4,20 +4,28 @@ import string
 
 
 class Account:
-    def __init__(self, owner, balance=0):
-        self.iban = self.generate_iban()
-        self.owner = owner
-        self.balance = float(balance)
-        self.transactions = []
+    def __init__(self, owner: str, balance: float = 0):
+        self.iban: str = self.generate_iban()
+        self.owner: str = owner
+        self.balance: float = float(balance)
+        self.transactions: list[dict[str, object]] = []
 
         if balance > 0:
             self.add_transaction("deposit", balance, note="Initial deposit")
 
-    def generate_iban(self, country_code="DE49", digit_count=18):
+    def generate_iban(self, country_code: str = "DE49", digit_count: int = 18) -> str:
         digits = ''.join(random.choices(string.digits, k=digit_count))
         return f"{country_code}{digits}"
+    
 
-    def add_transaction(self, transaction_type, amount, note="", source_account=None, target_account=None):
+    def add_transaction(
+        self,
+        transaction_type: str,
+        amount: float,
+        note: str = "",
+        source_account: str | None = None,
+        target_account: str | None = None
+    ) -> None:
         self.transactions.append({
             "time": datetime.datetime.now(),
             "type": transaction_type,
@@ -27,14 +35,16 @@ class Account:
             "note": note
         })
 
-    def deposit(self, amount, note=""):
+
+    def deposit(self, amount: float, note: str = "") -> None:
         if amount <= 0:
             raise ValueError("Deposit must be positive")
 
         self.balance += amount
         self.add_transaction("deposit", amount, note=note)
 
-    def withdraw(self, amount, note=""):
+
+    def withdraw(self, amount: float, note: str = "") -> None:
         if amount <= 0:
             raise ValueError("Withdrawal must be positive")
         if amount > self.balance:
@@ -43,7 +53,8 @@ class Account:
         self.balance -= amount
         self.add_transaction("withdraw", amount, note=note)
 
-    def transfer_to(self, target_account, amount, note=""):
+
+    def transfer_to(self, target_account: "Account", amount: float, note: str = "") -> None:
         if amount <= 0:
             raise ValueError("Transfer must be positive")
         if amount > self.balance:
@@ -70,23 +81,26 @@ class Account:
 
 
 class Bank:
-    def __init__(self, name="Blabla Bank"):
-        self.name = name
-        self.accounts = {}
+    def __init__(self, name: str = "Blabla Bank"):
+        self.name: str = name
+        self.accounts: dict[str, Account] = {}
 
-    def create_account(self, owner, balance=0.0):
+
+    def create_account(self, owner: str, balance: float = 0.0) -> Account:
         account = Account(owner, balance)
         self.accounts[account.iban] = account
         return account
 
-    def get_account(self, iban):
+
+    def get_account(self, iban: str) -> Account | None:
         return self.accounts.get(iban)
 
-    def list_accounts(self):
-        return self.accounts.values()
+
+    def list_accounts(self) -> list[Account]:
+        return list(self.accounts.values())
 
 
-def main():
+def main() -> None:
     bank = Bank()
 
     while True:
@@ -103,36 +117,56 @@ def main():
 
         try:
             if choice == "1":
-                owner_name = input("Owner name: ")
-                initial_balance = float(input("Initial balance: "))
+                owner_name = input("Owner name: ").strip()
+                initial_balance = float(input("Initial balance: ").strip())
                 account = bank.create_account(owner_name, initial_balance)
                 print(f"Account created: {account.iban}")
 
             elif choice == "2":
-                account = bank.get_account(input("Account number: "))
+                account = bank.get_account(input("Account number: ").strip())
+                if account is None:
+                    print("Account not found")
+                    continue
                 print(f"Balance: ${account.balance:.2f}")
 
             elif choice == "3":
-                account = bank.get_account(input("Account number: "))
-                amount = float(input("Amount: "))
+                account = bank.get_account(input("Account number: ").strip())
+                if account is None:
+                    print("Account not found")
+                    continue
+                amount = float(input("Amount: ").strip())
                 account.deposit(amount)
                 print("Deposit successful")
 
             elif choice == "4":
-                account = bank.get_account(input("Account number: "))
-                amount = float(input("Amount: "))
+                account = bank.get_account(input("Account number: ").strip())
+                if account is None:
+                    print("Account not found")
+                    continue
+                amount = float(input("Amount: ").strip())
                 account.withdraw(amount)
                 print("Withdrawal successful")
 
             elif choice == "5":
-                source_account = bank.get_account(input("Source account: "))
-                target_account = bank.get_account(input("Target account: "))
-                amount = float(input("Amount: "))
+                source_account = bank.get_account(input("Source account: ").strip())
+                if source_account is None:
+                    print("Source account not found")
+                    continue
+
+                target_account = bank.get_account(input("Target account: ").strip())
+                if target_account is None:
+                    print("Target account not found")
+                    continue
+
+                amount = float(input("Amount: ").strip())
                 source_account.transfer_to(target_account, amount)
                 print("Transfer successful")
 
             elif choice == "6":
-                account = bank.get_account(input("Account number: "))
+                account = bank.get_account(input("Account number: ").strip())
+                if account is None:
+                    print("Account not found")
+                    continue
                 for transaction in account.transactions:
                     print(transaction)
 
@@ -147,4 +181,5 @@ def main():
 
 
 if __name__ == "__main__":
+    
     main()

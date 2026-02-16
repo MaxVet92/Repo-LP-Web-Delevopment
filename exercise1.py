@@ -1,7 +1,10 @@
 
+import re
+
 def get_name() -> str:
     # Get the user's name
     # Accept capital letters, small letters, accents, hyphens, aposthophes
+    # This basically means: Have any combinations of letters and a symbol ('/-) and again a combination of letters
     pattern = re.compile(r"^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '\-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$")
 
     while True:
@@ -10,6 +13,7 @@ def get_name() -> str:
             return name
         print("Input not valid. Please try again")
 
+
 def get_weight_unit() -> str:
 # Ask the user which weight unit they want
     while True:
@@ -17,6 +21,7 @@ def get_weight_unit() -> str:
         if unit in ("pounds", "kg"):
             return unit
         print("Wrong input. Please try again")
+
 
 def get_weight(name: str, weight_unit: str) -> float:
     # Ask the user for weight and convert to kg if needed
@@ -34,6 +39,7 @@ def get_weight(name: str, weight_unit: str) -> float:
         except ValueError:
             print("Please type a valid number")
 
+
 def get_height_unit() -> str:
     # Ask the user which height unit they want
     while True:
@@ -41,6 +47,7 @@ def get_height_unit() -> str:
         if unit in ("inches", "cm"):
             return unit
         print("Wrong input. Please try again")
+
 
 def get_height(height_unit: str) -> float:
     # Ask the user for height and convert to meters
@@ -56,6 +63,7 @@ def get_height(height_unit: str) -> float:
         except ValueError:
             print("You didn't type in a number. Please try again.")
 
+
 def get_info() -> tuple[str, float, float]:
     # Main function to get all info
     name = get_name()
@@ -64,6 +72,7 @@ def get_info() -> tuple[str, float, float]:
     height_unit = get_height_unit()
     height = get_height(height_unit)
     return name, weight, height
+
     
 def get_bmi(weight: float, height: float) -> float:    
     # calculate the BMI
@@ -77,6 +86,7 @@ def get_bmi(weight: float, height: float) -> float:
     float: BMI vlaue
     """
     return weight / height ** 2
+
 
 def get_bmi_category(bmi: float) -> str:
     # Calculate BMI category
@@ -93,9 +103,9 @@ def get_bmi_category(bmi: float) -> str:
         category = "Obese"
     return category
 
+
 # Main, function calling
 if __name__ == "__main__":
-    import re
     name, weight, height = get_info()
     bmi: float = get_bmi(weight, height)
     category: str = get_bmi_category(bmi)
