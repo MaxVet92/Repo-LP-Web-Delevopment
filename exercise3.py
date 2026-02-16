@@ -1,4 +1,6 @@
 
+# Please please please always 2 spaces between the functions
+
 # import libraries
 import json
 import csv
@@ -7,6 +9,7 @@ def save_file_to_json(contacts: dict[str, list[dict[str, str]]]):
     # save back to json file
     with open("contacts.json", "w", encoding = "utf-8") as file:
         json.dump(contacts, file, indent = 2, ensure_ascii=False)
+
 
 def see_menu_choice() -> int:
     # This is the main menu
@@ -23,6 +26,7 @@ def see_menu_choice() -> int:
     user_choice = int(input("Which action would you like to do? Select (1/2/3/4/5/6/7): "))
     return user_choice
 
+
 def open_second_level_menu(user_choice: int):
     # This is the menu in the second level, once the user selected an option
     print("\n=== Contact Notebook Menu ===")
@@ -37,6 +41,7 @@ def open_second_level_menu(user_choice: int):
     elif user_choice == 5:
         print("1. Edit contact")
     print("2. Go back to menu")
+
 
 def view_contactlist(contacts: dict[str, list[dict[str, str]]], main_choice: int):
     # let user view their contacts
@@ -53,6 +58,7 @@ def view_contactlist(contacts: dict[str, list[dict[str, str]]], main_choice: int
             print(user_choice)
             print("Invalid input. Try again.")
 
+
 def view_contact_details_of_person_to_add() -> dict[str, str]:
     person = {
                 "first_name": input("Type the first name: "),
@@ -61,6 +67,7 @@ def view_contact_details_of_person_to_add() -> dict[str, str]:
                 }
     return person
  
+
 def add_contact_to_notebook(contacts: dict[str, list[dict[str, str]]], main_choice: int):
     # Let the user add a contact to their notebook
     while True:
@@ -78,6 +85,7 @@ def add_contact_to_notebook(contacts: dict[str, list[dict[str, str]]], main_choi
                 print("Invalid input: Please try again. You must type 1 or 2")
         except ValueError:
             print("Invalid input. Try again")
+
 
 def remove_specific_contact(contacts: dict[str, list[dict[str, str]]], main_choice: int):
     # Let the user delete a contact
@@ -102,6 +110,7 @@ def remove_specific_contact(contacts: dict[str, list[dict[str, str]]], main_choi
         except ValueError:        
             print("Invalid input. Try again")
 
+
 def search_specific_contact(contacts: dict[str, list[dict[str, str]]], main_choice: int):
     # Let the user search for contacts
     while True:
@@ -124,6 +133,8 @@ def search_specific_contact(contacts: dict[str, list[dict[str, str]]], main_choi
         except ValueError:
             print("Invalid input. Try again")
 
+
+# this type casting is incorrect, as person is a dict, not a list, please correct
 def apply_edit(person: dict[str, list[dict[str, str]]], action: int):
     # Overwrite the contactlist based on user input for editting
     if action == 1:
@@ -135,11 +146,13 @@ def apply_edit(person: dict[str, list[dict[str, str]]], action: int):
     else:
         print("Invalid input. Try again")
 
+
 def open_edit_menu():
     # functions regardimng contact editting
     print("1. first_name")
     print("2. last_name")
     print("3. phone_number")
+
 
 def find_contact(contacts, first_name: str, last_name: str):
     # Find contact for editting
@@ -147,6 +160,7 @@ def find_contact(contacts, first_name: str, last_name: str):
         if person["first_name"].strip().lower() == first_name.strip().lower() and person["last_name"].strip().lower() == last_name.strip().lower():
             return person
     return None
+
 
 def edit_contact_fields(person: dict[str, list[dict[str, str]]]):
     # Helper: edit multiple fields of a single contact
@@ -165,6 +179,7 @@ def edit_contact_fields(person: dict[str, list[dict[str, str]]]):
                 print("Invalid input. Try again")
         except ValueError:
             print("Invalid input. Try again")
+
 
 def edit_specific_contact(contacts: dict[str, list[dict[str, str]]], main_choice: int):
     # Main function to edit contacts
@@ -193,6 +208,7 @@ def edit_specific_contact(contacts: dict[str, list[dict[str, str]]], main_choice
                 print("Invalid input: Please try again. You must type 1 or 2")
         except ValueError:
             print("Invalid input. Please try again")
+
 
 def export_contactlist_to_csv(contacts: dict[str, list[dict[str, str]]]):
 # This lets user export the contact list to a csv
@@ -236,6 +252,7 @@ def see_user_menu(contacts: dict[str, list[dict[str, str]]]):
                 print("Invalid input. Try again")
         except ValueError:
             print("Invalid input. Please try again")
+
 
 if __name__ == "__main__":
     with open("contacts.json", "r") as file:

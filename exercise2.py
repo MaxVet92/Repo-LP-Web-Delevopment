@@ -1,4 +1,6 @@
 
+# Please please please always 2 spaces between the functions
+
 def get_amount():
     # Let user input the amount of money to be changed
     while True:
@@ -9,6 +11,7 @@ def get_amount():
         except ValueError:
             pass
         print("This is not a valid amount. Please try again")#
+
 
 def print_supported_currencies(rates):
     while True:
@@ -31,7 +34,9 @@ def get_existing_currencies(rates: dict[tuple[str, str], float]) -> set[str]:
         existing_currencies.add(pair[1])
     return existing_currencies
 
-def get_new_currency(existing_currencies: set) -> str:
+
+# I have added | None as currently return type is not str if the user answer N
+def get_new_currency(existing_currencies: set) -> str | None:
     while True:
         is_adding_currencies = input("Would you like to add a new currenciy? Type 'Y' or 'N'. ").strip().upper()
         if is_adding_currencies == "Y":
@@ -45,6 +50,7 @@ def get_new_currency(existing_currencies: set) -> str:
 
         print("Invalid format or currency already exists. Please try again.")
 
+
 def get_exchange_rate(new_currency: str, existing_currency: str) -> float:
     while True:
         try:
@@ -55,6 +61,9 @@ def get_exchange_rate(new_currency: str, existing_currency: str) -> float:
         except ValueError:
             print("Invalid input. Enter a positive number")
 
+
+# there is a bug in this function if the user answers N, the function will return None, please correct
+# as mentioned, more precise type hinting is better, in this case not tuple but tuple[str, str]
 def add_currencies(rates: dict[tuple, float]) -> dict[tuple, float]:
     new_rates = rates.copy()
     # Let the user have the option to add currencies and thus add exchange rates
@@ -68,6 +77,7 @@ def add_currencies(rates: dict[tuple, float]) -> dict[tuple, float]:
         new_rates[currency, new_currency] = 1 / rate
 
     return new_rates
+
 
 def currency_source(rates) -> str:
     # Let user choose the source currency
@@ -204,6 +214,7 @@ def main():
             break
         else:
             print("Invalid option. Please select 1-6.")
+
 
 if __name__ == "__main__":
 

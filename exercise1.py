@@ -1,4 +1,5 @@
 
+# feedback 20260216: as mentioned, all imports always on top of the file, so move the import re to the top.
 def get_name() -> str:
     # Get the user's name
     # Accept capital letters, small letters, accents, hyphens, aposthophes
@@ -74,7 +75,7 @@ def get_bmi(weight: float, height: float) -> float:
     height (float): height in centimeters (m) 
     
     Return:
-    float: BMI vlaue
+    float: BMI value
     """
     return weight / height ** 2
 
